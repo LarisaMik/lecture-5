@@ -5,7 +5,7 @@ package myprojects.automation.assignment5.utils;
  */
 public class Properties {
     private static final String DEFAULT_BASE_URL = "http://prestashop-automation.qatestlab.com.ua/";
-    private static final String DEFAULT_BASE_ADMIN_URL = "http://prestashop-automation.qatestlab.com.ua/admin147ajyvk0/";
+    private static final String DEFAULT_BASE_ADMIN_URL = "http://prestashop-automation.qatestlab.com.ua/admin147ajyvk0/index.php?controller=AdminLogin&token=d251f363cceb5a849cb7330938c64dea";
 
     private Properties() {
 

@@ -3,16 +3,23 @@ package myprojects.automation.assignment5;
 import myprojects.automation.assignment5.utils.logging.EventHandler;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.ie.InternetExplorerDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
 
+import java.io.File;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,20 +39,20 @@ public abstract class BaseTest {
      */
     @BeforeClass
     @Parameters({"selenium.browser", "selenium.grid"})
-    public void setUp(@Optional("chrome") String browser, @Optional("") String gridUrl) {
+    public void setUp(@Optional("mobile") String browser, @Optional("") String gridUrl) {
         driver = new EventFiringWebDriver(getDriver(browser));
         driver.register(new EventHandler());
         // driver = new EventFiringWebDriver(....);
         // driver.register(new EventHandler());
         // ...
 
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+        driver.manage().timeouts().implicitlyWait(15, TimeUnit.SECONDS);
+        driver.manage().timeouts().pageLoadTimeout(30, TimeUnit.SECONDS);
         isMobileTesting = isMobileTesting(browser);
 
         // unable to maximize window in mobile mode
         if (!isMobileTesting) {
-            driver.manage().window().maximize();
+   //         driver.manage().window().maximize();
         }
         actions = new GeneralActions(driver);
     }
@@ -96,6 +103,24 @@ public abstract class BaseTest {
                         "webdriver.ie.driver",
                         getResource("/IEDriverServer.exe"));
                 return new InternetExplorerDriver();
+            case "remote-chrome":
+                ChromeOptions optionsRemote =new ChromeOptions();
+                try {
+                 return new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), optionsRemote);
+                }catch (MalformedURLException e){
+                    e.printStackTrace();
+                }
+            case "mobile":
+                System.setProperty(
+                "webdriver.chrome.driver",
+                new File(BaseTest.class.getResource("/chromedriver.exe").getFile()).getPath());
+                Map<String, String> mobileEmulation =new HashMap<>();
+                mobileEmulation.put("device name", "IPhone 6");
+                ChromeOptions chromeOptions =new ChromeOptions();
+                chromeOptions.setExperimentalOption("mobileEmulation", mobileEmulation);
+                return new ChromeDriver(chromeOptions);
+
+
             case "chrome":
             default:
                 System.setProperty(

@@ -4,6 +4,11 @@
     <test name="Create New Order [Chrome]" >
         <parameter name="selenium.browser" value="chrome" />
         <parameter name="selenium.grid" value="http://localhost:4444/wd/hub" />
+        <groups>
+            <run>
+                <include name="basic"/>
+            </run>
+        </groups><!--configure test to execute testing script using Chrome browser-->
         <classes>
             <class name="myprojects.automation.assignment5.tests.PlaceOrderTest" />
         </classes>
